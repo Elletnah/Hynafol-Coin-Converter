@@ -1,0 +1,295 @@
+<!doctype html>
+<!--
+HynafolCoinConverter
+Fantasy Coin Converter – Web Edition
+
+Author: Shantelle Andrews
+Year: 2025
+Version: 1.0
+
+Description
+-----------
+A simple web-based utility for converting Hynafol currency using the
+3–6–3–6–3 coin system.
+
+    3 copper = 1 tower
+    6 towers = 1 piece
+    3 pieces = 1 bit
+    6 bits   = 1 crown
+    3 crowns = 1 bar
+
+Features
+--------
+• Accepts quick input like "37 copper" or "1 bar 2 crowns 3 towers"
+• Allows manual entry for each denomination
+• Collapses totals into the fewest coins possible
+• Can split treasure evenly among a number of players
+
+Design Notes
+------------
+All values are first converted into copper (the base unit). The program
+then performs a greedy breakdown from the largest denomination (bar)
+down to copper to produce the cleanest possible coin distribution.
+
+License
+-------
+MIT License
+
+Copyright (c) 2025 Shantelle Andrews
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files to deal in
+the Software without restriction.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hynafol Coin Converter</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f4f1ea;
+      color: #2f241b;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fffaf2;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    p {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
+      border: 1px solid #b9aa96;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #5a3e2b;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #6d4c36;
+    }
+
+    .results {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f0e6d8;
+      border-radius: 8px;
+    }
+
+    .small-note {
+      font-size: 14px;
+      color: #5a4b3d;
+      margin-top: 8px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Hynafol Coin Converter</h1>
+    <p>3 copper = 1 tower • 6 towers = 1 piece • 3 pieces = 1 bit • 6 bits = 1 crown • 3 crowns = 1 bar</p>
+
+    <label for="quickEntry">How many coins are you turning into the bank today?</label>
+    <input type="text" id="quickEntry" placeholder="Example: 1 bar 1 crown 5 towers">
+
+    <p class="small-note">Or leave that blank and count each pouch below.</p>
+
+    <label for="bars">Bars</label>
+    <input type="number" id="bars" min="0" placeholder="0">
+
+    <label for="crowns">Crowns</label>
+    <input type="number" id="crowns" min="0" placeholder="0">
+
+    <label for="bits">Bits</label>
+    <input type="number" id="bits" min="0" placeholder="0">
+
+    <label for="pieces">Pieces</label>
+    <input type="number" id="pieces" min="0" placeholder="0">
+
+    <label for="towers">Towers</label>
+    <input type="number" id="towers" min="0" placeholder="0">
+
+    <label for="copper">Copper</label>
+    <input type="number" id="copper" min="0" placeholder="0">
+
+    <button onclick="calculateCoins()">Count and Collapse</button>
+
+    <label for="players">Split among how many adventurers? (optional)</label>
+    <input type="number" id="players" min="1" placeholder="Leave blank if not splitting">
+
+    <button onclick="splitCoins()">Split the Treasury</button>
+
+    <div class="results" id="results">
+      <strong>Your results will appear here.</strong>
+    </div>
+  </div>
+
+  <script>
+    const TO_COPPER = {
+      copper: 1,
+      tower: 3,
+      piece: 18,
+      bit: 54,
+      crown: 324,
+      bar: 972
+    };
+
+    const UNITS = ["bar", "crown", "bit", "piece", "tower", "copper"];
+
+    function parseQuickEntry(line) {
+      let total = 0;
+      const matches = line.matchAll(/(\d+)\s*([a-zA-Z]+)/g);
+
+      for (const match of matches) {
+        const amount = parseInt(match[1]);
+        let unit = match[2].toLowerCase();
+
+        if (unit.endsWith("s")) {
+          unit = unit.slice(0, -1);
+        }
+
+        const aliases = {
+          c: "copper",
+          t: "tower",
+          p: "piece",
+          b: "bit",
+          cr: "crown",
+          br: "bar"
+        };
+
+        unit = aliases[unit] || unit;
+
+        if (TO_COPPER[unit]) {
+          total += amount * TO_COPPER[unit];
+        }
+      }
+
+      return total;
+    }
+
+    function collapseCoins(totalCopper) {
+      let remaining = totalCopper;
+      let result = {};
+
+      for (const unit of UNITS) {
+        const value = TO_COPPER[unit];
+        result[unit] = Math.floor(remaining / value);
+        remaining -= result[unit] * value;
+      }
+
+      return result;
+    }
+
+    function formatBreakdown(breakdown) {
+      let parts = [];
+
+      for (const unit of UNITS) {
+        if (breakdown[unit] > 0) {
+          let name = breakdown[unit] === 1 ? unit : unit + "s";
+          parts.push(`${breakdown[unit]} ${name}`);
+        }
+      }
+
+      return parts.length > 0 ? parts.join(", ") : "0 copper";
+    }
+
+    function getTotalCopper() {
+      const quickEntry = document.getElementById("quickEntry").value.trim();
+
+      if (quickEntry !== "") {
+        return parseQuickEntry(quickEntry);
+      }
+
+      const bars = parseInt(document.getElementById("bars").value) || 0;
+      const crowns = parseInt(document.getElementById("crowns").value) || 0;
+      const bits = parseInt(document.getElementById("bits").value) || 0;
+      const pieces = parseInt(document.getElementById("pieces").value) || 0;
+      const towers = parseInt(document.getElementById("towers").value) || 0;
+      const copper = parseInt(document.getElementById("copper").value) || 0;
+
+      return (
+        bars * TO_COPPER.bar +
+        crowns * TO_COPPER.crown +
+        bits * TO_COPPER.bit +
+        pieces * TO_COPPER.piece +
+        towers * TO_COPPER.tower +
+        copper * TO_COPPER.copper
+      );
+    }
+
+    function calculateCoins() {
+      const totalCopper = getTotalCopper();
+      const breakdown = collapseCoins(totalCopper);
+
+      document.getElementById("results").innerHTML = `
+        <strong>Total tallied value:</strong> ${totalCopper} copper<br><br>
+        <strong>Rendered in the fewest coins:</strong> ${formatBreakdown(breakdown)}
+      `;
+    }
+
+    function splitCoins() {
+      const totalCopper = getTotalCopper();
+      const players = parseInt(document.getElementById("players").value);
+
+      if (!players || players < 1) {
+        document.getElementById("results").innerHTML = `
+          <strong>The quartermaster squints at the ledger.</strong><br><br>
+          You must name at least 1 adventurer to split the treasury.
+        `;
+        return;
+      }
+
+      const eachShare = Math.floor(totalCopper / players);
+      const leftover = totalCopper % players;
+
+      const eachBreakdown = collapseCoins(eachShare);
+      const leftoverBreakdown = collapseCoins(leftover);
+
+      document.getElementById("results").innerHTML = `
+        <strong>Total tallied value:</strong> ${totalCopper} copper<br><br>
+        <strong>Each adventurer receives:</strong> ${eachShare} copper<br>
+        ${formatBreakdown(eachBreakdown)}<br><br>
+        <strong>Left upon the counting table:</strong> ${leftover} copper<br>
+        ${formatBreakdown(leftoverBreakdown)}
+      `;
+    }
+  </script>
+</body>
+</html>
