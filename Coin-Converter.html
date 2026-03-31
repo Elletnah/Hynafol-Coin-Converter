@@ -1,0 +1,392 @@
+<!doctype html>
+<!--
+HynafolCoinConverter - Web Edition
+Author: Shantelle Andrews (2025)
+-->
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hynafol Coin Converter</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Cormorant+Garamond&display=swap" rel="stylesheet">
+
+  <style>
+
+/* Universal box sizing fix (includes pseudo-elements) */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+    /* Base page styling */
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      margin: 20px;
+      background: #f4f1ea;
+      color: #2f241b;
+    }
+    
+    h1 {
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 1px;
+}
+
+    /* Main app container */
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fffaf2;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    /* Section labels */
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    /* Inputs + dropdowns */
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
+      border: 1px solid #b9aa96;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    /* Buttons */
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #5a3e2b;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    button:hover {
+      background: #6d4c36;
+    }
+
+    /* Buy Me a Coffee button styling */
+.coffee-btn {
+  display: inline-block;
+  padding: 12px 18px;
+  background: #5a3e2b;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: 'Cormorant Garamond', serif;
+  transition: background 0.2s ease;
+}
+
+.coffee-btn:hover {
+  background: #6d4c36;
+}
+
+    /* Output display */
+    .results {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f0e6d8;
+      border-radius: 8px;
+    }
+
+    hr { margin: 20px 0; }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>Hynafol Coin Converter</h1>
+
+<!-- Quick input (string parsing) -->
+<label>Quick Entry</label>
+<input type="text" id="quickEntry" placeholder="1 bar 1 crown 5 towers">
+
+<!-- Manual denomination inputs -->
+<label>Bars</label>
+<input type="number" id="bars">
+
+<label>Crowns</label>
+<input type="number" id="crowns">
+
+<label>Bits</label>
+<input type="number" id="bits">
+
+<label>Pieces</label>
+<input type="number" id="pieces">
+
+<label>Towers</label>
+<input type="number" id="towers">
+
+<label>Copper</label>
+<input type="number" id="copper">
+
+<!-- Main calculation -->
+<button onclick="calculateCoins()">Count and Collapse</button>
+
+<!-- Reset -->
+<button onclick="clearAll()">Clear the Ledger</button>
+
+<hr>
+
+<!-- Split functionality -->
+<label>Split among players</label>
+<input type="number" id="players">
+<button onclick="splitCoins()">Split Treasury</button>
+
+<hr>
+
+<!-- Break down large coins -->
+<label>Break Coins Down</label>
+<select id="breakUnit">
+  <option value="bar">Bar</option>
+  <option value="crown">Crown</option>
+  <option value="bit">Bit</option>
+  <option value="piece">Piece</option>
+  <option value="tower">Tower</option>
+</select>
+
+<input type="number" id="breakAmount" placeholder="Amount">
+<button onclick="breakCoins()">Break It Down</button>
+
+<hr>
+
+<!-- Percentage calculator -->
+<label>Percentage Calculator</label>
+<input type="text" id="percentQuickEntry" placeholder="1 crown">
+<input type="number" id="percentValue" placeholder="25%">
+<button onclick="calculatePercentage()">Calculate Percentage</button>
+
+<!-- Output area -->
+<div class="results" id="results">
+Ready.
+</div>
+
+<p style="text-align:center; margin-top:10px;">
+  Enjoying the tool?
+</p>
+
+<div style="text-align:center; margin-top:10px;">
+  <a href="https://www.buymeacoffee.com/Niamh.Isolda" target="_blank" class="coffee-btn">
+    💰 Toss a Coin to the Converter
+  </a>
+</div>
+
+</div>
+
+<script>
+
+/* =============================
+   Conversion Constants
+   ============================= */
+
+/* Base conversion values → everything converts to copper */
+const TO_COPPER = {
+  copper:1,
+  tower:3,
+  piece:18,
+  bit:54,
+  crown:324,
+  bar:972
+};
+
+/* Ordered largest → smallest for breakdown logic */
+const UNITS = ["bar","crown","bit","piece","tower","copper"];
+
+
+/* =============================
+   Parsing & Conversion Helpers
+   ============================= */
+
+/* Converts a string like "1 bar 2 crowns" into copper */
+function parseQuickEntry(line){
+  let total=0;
+
+  const matches=line.matchAll(/(\d+)\s*([a-zA-Z]+)/g);
+
+  for(const m of matches){
+    let amount=parseInt(m[1]);
+
+    /* Normalize unit (lowercase + remove plural s) */
+    let unit=m[2].toLowerCase().replace("s","");
+
+    /* Short aliases (user convenience) */
+    const alias={
+      c:"copper",
+      t:"tower",
+      p:"piece",
+      b:"bit",
+      cr:"crown",
+      br:"bar"
+    };
+
+    unit=alias[unit]||unit;
+
+    if(TO_COPPER[unit]){
+      total+=amount*TO_COPPER[unit];
+    }
+  }
+
+  return total;
+}
+
+
+/* Converts copper → largest possible coin breakdown */
+function collapseCoins(c){
+  let result={};
+
+  for(const unit of UNITS){
+    result[unit]=Math.floor(c/TO_COPPER[unit]);
+    c-=result[unit]*TO_COPPER[unit];
+  }
+
+  return result;
+}
+
+
+/* Turns breakdown object into readable string */
+function formatBreakdown(b){
+  return UNITS
+    .filter(u=>b[u]>0)
+    .map(u=>`${b[u]} ${b[u]==1?u:u+"s"}`)
+    .join(", ") || "0 copper";
+}
+
+
+/* =============================
+   Core Calculation Logic
+   ============================= */
+
+/* Determines total copper from either quick entry OR manual inputs */
+function getTotalCopper(){
+
+  const q=document.getElementById("quickEntry").value.trim();
+
+  /* Quick entry takes priority */
+  if(q) return parseQuickEntry(q);
+
+  /* Fallback to individual inputs */
+  return (
+    (parseInt(bars.value)||0)*972 +
+    (parseInt(crowns.value)||0)*324 +
+    (parseInt(bits.value)||0)*54 +
+    (parseInt(pieces.value)||0)*18 +
+    (parseInt(towers.value)||0)*3 +
+    (parseInt(copper.value)||0)
+  );
+}
+
+
+/* Collapse total into optimal coin distribution */
+function calculateCoins(){
+  let total=getTotalCopper();
+  let b=collapseCoins(total);
+
+  results.innerHTML=`Total: ${total} copper<br><br>${formatBreakdown(b)}`;
+}
+
+
+/* Split total evenly among players */
+function splitCoins(){
+
+  let total=getTotalCopper();
+  let n=parseInt(players.value);
+
+  if(!n||n<1){
+    results.innerHTML="Need at least 1 player.";
+    return;
+  }
+
+  let each=Math.floor(total/n);
+  let leftover=total%n;
+
+  results.innerHTML=`
+Each gets: ${formatBreakdown(collapseCoins(each))}<br><br>
+Leftover: ${formatBreakdown(collapseCoins(leftover))}
+`;
+}
+
+
+/* Break large denomination into smaller coins */
+function breakCoins() {
+
+  let unit = breakUnit.value;
+  let amount = parseInt(breakAmount.value);
+
+  if (!amount || amount < 1) {
+    results.innerHTML = "Enter a valid amount.";
+    return;
+  }
+
+  // Convert starting value to copper (base unit)
+  let totalCopper = amount * TO_COPPER[unit];
+
+  let output = [];
+
+  // Find index of selected unit
+  let startIndex = UNITS.indexOf(unit);
+
+  // Convert into ALL smaller denominations (independently)
+  for (let i = startIndex + 1; i < UNITS.length; i++) {
+
+    let smallerUnit = UNITS[i];
+
+    let value = Math.floor(totalCopper / TO_COPPER[smallerUnit]);
+
+    if (value > 0) {
+      output.push(`${value} ${value === 1 ? smallerUnit : smallerUnit + "s"}`);
+    }
+  }
+
+  results.innerHTML = `
+    <strong>Full breakdown of ${amount} ${unit}${amount > 1 ? "s" : ""}:</strong><br><br>
+    ${output.join("<br>")}
+  `;
+}
+
+ 
+
+/* Calculate percentage of a coin amount */
+function calculatePercentage(){
+
+  let total=parseQuickEntry(percentQuickEntry.value);
+  let percent=parseFloat(percentValue.value);
+
+  if(!total||isNaN(percent)){
+    results.innerHTML="Enter valid values.";
+    return;
+  }
+
+  let value=Math.floor(total*(percent/100));
+
+  results.innerHTML=`${percent}% = ${formatBreakdown(collapseCoins(value))}`;
+}
+
+
+/* Reset all inputs + results */
+function clearAll(){
+
+  document.querySelectorAll("input").forEach(i=>i.value="");
+
+  results.innerHTML="Ledger cleared.";
+}
+
+</script>
+
+</body>
+</html>
