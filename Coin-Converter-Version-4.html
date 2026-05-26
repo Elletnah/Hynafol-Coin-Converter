@@ -1,0 +1,700 @@
+<!doctype html>
+<!--
+HynafolCoinConverter - Web Edition
+Version 4
+Author: Shantelle Andrews (2025)
+-->
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hynafol Coin Converter</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Cormorant+Garamond&display=swap" rel="stylesheet">
+
+  <style>
+
+/* Universal box sizing fix */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Base page styling */
+body {
+  font-family: 'Cormorant Garamond', serif;
+  margin: 20px;
+  background: #f4f1ea;
+  color: #2f241b;
+}
+
+/* Main title */
+h1 {
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 1px;
+}
+
+/* Main app container */
+.container {
+  max-width: 600px;
+  margin: auto;
+  background: #fffaf2;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Section labels */
+label {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+}
+
+/* Inputs */
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  border: 1px solid #b9aa96;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+/* Buttons */
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #5a3e2b;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+button:hover {
+  background: #6d4c36;
+}
+
+/* Results area */
+.results {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f0e6d8;
+  border-radius: 8px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tab-button {
+  flex: 1;
+}
+
+.tab-button.active {
+  background: #6d4c36;
+}
+
+/* Hide inactive tabs */
+.tab-content {
+  display: none;
+}
+
+/* Show active tab */
+.tab-content.active {
+  display: block;
+}
+
+/* Buy Me a Coffee button */
+.coffee-btn {
+  display: inline-block;
+  padding: 12px 18px;
+  background: #5a3e2b;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.coffee-btn:hover {
+  background: #6d4c36;
+}
+
+.small-note {
+  font-size: 14px;
+  color: #5a4b3d;
+  margin-top: 8px;
+  text-align: center;
+}
+
+hr {
+  margin: 20px 0;
+}
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Hynafol Coin Converter</h1>
+
+<!-- =========================
+     TAB BUTTONS
+========================= -->
+
+<div class="tabs">
+
+  <button class="tab-button active"
+          onclick="openTab('treasuryTab', this)">
+    Treasury
+  </button>
+
+  <button class="tab-button"
+          onclick="openTab('merchantTab', this)">
+    Merchant
+  </button>
+
+  <button class="tab-button"
+          onclick="openTab('utilitiesTab', this)">
+    Utilities
+  </button>
+
+</div>
+
+
+<!-- =========================
+     TREASURY TAB
+========================= -->
+
+<div class="tab-content active" id="treasuryTab">
+
+  <label>Quick Entry</label>
+  <input type="text"
+         id="quickEntry"
+         placeholder="1 bar 1 crown 5 towers">
+
+  <label>Bars</label>
+  <input type="number" id="bars">
+
+  <label>Crowns</label>
+  <input type="number" id="crowns">
+
+  <label>Bits</label>
+  <input type="number" id="bits">
+
+  <label>Pieces</label>
+  <input type="number" id="pieces">
+
+  <label>Towers</label>
+  <input type="number" id="towers">
+
+  <label>Copper</label>
+  <input type="number" id="copper">
+
+  <button onclick="calculateCoins()">
+    Count Treasury
+  </button>
+
+  <hr>
+
+  <label>Split among adventurers</label>
+  <input type="number"
+         id="players"
+         placeholder="Number of adventurers">
+
+  <button onclick="splitCoins()">
+    Split Treasury
+  </button>
+
+  <div class="results" id="results">
+    Treasury ledger ready.
+  </div>
+
+  <button onclick="clearAll()">
+    Clear the Ledger
+  </button>
+
+</div>
+
+
+<!-- =========================
+     MERCHANT TAB
+========================= -->
+
+<div class="tab-content" id="merchantTab">
+
+  <label>Merchant Calculator</label>
+
+  <p class="small-note">
+    Enter the price per item, then quantity.
+  </p>
+
+  <label>Bars</label>
+  <input type="number" id="merchantBars">
+
+  <label>Crowns</label>
+  <input type="number" id="merchantCrowns">
+
+  <label>Bits</label>
+  <input type="number" id="merchantBits">
+
+  <label>Pieces</label>
+  <input type="number" id="merchantPieces">
+
+  <label>Towers</label>
+  <input type="number" id="merchantTowers">
+
+  <label>Copper</label>
+  <input type="number" id="merchantCopper">
+
+  <label>Quantity</label>
+  <input type="number"
+         id="merchantQuantity"
+         placeholder="1">
+
+  <button onclick="calculateMerchantTotal()">
+    Calculate Total Cost
+  </button>
+
+  <div class="results" id="merchantResults">
+    Merchant ledger ready.
+  </div>
+
+  <button onclick="clearAll()">
+    Clear the Ledger
+  </button>
+
+</div>
+
+
+<!-- =========================
+     UTILITIES TAB
+========================= -->
+
+<div class="tab-content" id="utilitiesTab">
+
+  <!-- Percentage calculator -->
+  <label>Percentage Calculator</label>
+
+  <input type="text"
+         id="percentQuickEntry"
+         placeholder="1 crown">
+
+  <input type="number"
+         id="percentValue"
+         placeholder="25%">
+
+  <button onclick="calculatePercentage()">
+    Calculate Percentage
+  </button>
+
+  <hr>
+
+  <!-- Break coins -->
+  <label>Break Coins Down</label>
+
+  <select id="breakUnit">
+    <option value="bar">Bar</option>
+    <option value="crown">Crown</option>
+    <option value="bit">Bit</option>
+    <option value="piece">Piece</option>
+    <option value="tower">Tower</option>
+  </select>
+
+  <input type="number"
+         id="breakAmount"
+         placeholder="Amount">
+
+  <button onclick="breakCoins()">
+    Break It Down
+  </button>
+
+  <div class="results" id="utilityResults">
+    Utility ledger ready.
+  </div>
+
+  <button onclick="clearAll()">
+    Clear the Ledger
+  </button>
+
+</div>
+
+
+<!-- Buy Me a Coffee -->
+
+<p style="text-align:center; margin-top:10px;">
+  Enjoying the tool?
+</p>
+
+<div style="text-align:center; margin-top:10px;">
+  <a href="https://www.buymeacoffee.com/Niamh.Isolda"
+     target="_blank"
+     class="coffee-btn">
+
+    💰 Toss a Coin to the Converter
+
+  </a>
+</div>
+
+</div>
+
+
+<script>
+
+/* =============================
+   Tab Switching
+============================= */
+
+function openTab(tabId, button){
+
+  document.querySelectorAll(".tab-content")
+    .forEach(tab => tab.classList.remove("active"));
+
+  document.querySelectorAll(".tab-button")
+    .forEach(btn => btn.classList.remove("active"));
+
+  document.getElementById(tabId)
+    .classList.add("active");
+
+  button.classList.add("active");
+}
+
+
+/* Smooth scroll to results */
+function scrollToResults(id){
+
+  document.getElementById(id).scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+
+/* =============================
+   Conversion Constants
+============================= */
+
+const TO_COPPER = {
+  copper:1,
+  tower:3,
+  piece:18,
+  bit:54,
+  crown:324,
+  bar:972
+};
+
+const UNITS = ["bar","crown","bit","piece","tower","copper"];
+
+
+/* =============================
+   Parsing Helpers
+============================= */
+
+function parseQuickEntry(line){
+
+  let total=0;
+
+  const matches=line.matchAll(/(\d+)\s*([a-zA-Z]+)/g);
+
+  for(const m of matches){
+
+    let amount=parseInt(m[1]);
+
+    let unit=m[2]
+      .toLowerCase()
+      .replace("s","");
+
+    const alias={
+      c:"copper",
+      t:"tower",
+      p:"piece",
+      b:"bit",
+      cr:"crown",
+      br:"bar"
+    };
+
+    unit=alias[unit]||unit;
+
+    if(TO_COPPER[unit]){
+      total+=amount*TO_COPPER[unit];
+    }
+  }
+
+  return total;
+}
+
+
+/* Collapse copper into optimal coins */
+function collapseCoins(c){
+
+  let result={};
+
+  for(const unit of UNITS){
+
+    result[unit]=Math.floor(c/TO_COPPER[unit]);
+
+    c-=result[unit]*TO_COPPER[unit];
+  }
+
+  return result;
+}
+
+
+/* Format readable output */
+function formatBreakdown(b){
+
+  return UNITS
+    .filter(u=>b[u]>0)
+    .map(u=>`${b[u]} ${b[u]==1?u:u+"s"}`)
+    .join(", ") || "0 copper";
+}
+
+
+/* =============================
+   Treasury Calculator
+============================= */
+
+function getTotalCopper(){
+
+  const q=document
+    .getElementById("quickEntry")
+    .value
+    .trim();
+
+  if(q) return parseQuickEntry(q);
+
+  return (
+    (parseInt(bars.value)||0)*972 +
+    (parseInt(crowns.value)||0)*324 +
+    (parseInt(bits.value)||0)*54 +
+    (parseInt(pieces.value)||0)*18 +
+    (parseInt(towers.value)||0)*3 +
+    (parseInt(copper.value)||0)
+  );
+}
+
+
+function calculateCoins(){
+
+  let total=getTotalCopper();
+
+  let breakdown=collapseCoins(total);
+
+  results.innerHTML=`
+    <strong>Total:</strong> ${total} copper<br><br>
+    ${formatBreakdown(breakdown)}
+  `;
+
+  scrollToResults("results");
+}
+
+
+/* Split treasury */
+function splitCoins(){
+
+  let total=getTotalCopper();
+
+  let n=parseInt(players.value);
+
+  if(!n||n<1){
+
+    results.innerHTML=`
+      The quartermaster squints suspiciously.<br><br>
+      Need at least 1 adventurer.
+    `;
+
+    scrollToResults("results");
+
+    return;
+  }
+
+  let each=Math.floor(total/n);
+
+  let leftover=total%n;
+
+  results.innerHTML=`
+    <strong>Each Adventurer Receives:</strong><br>
+    ${formatBreakdown(collapseCoins(each))}<br><br>
+
+    <strong>Left on the Counting Table:</strong><br>
+    ${formatBreakdown(collapseCoins(leftover))}
+  `;
+
+  scrollToResults("results");
+}
+
+
+/* =============================
+   Merchant Calculator
+============================= */
+
+function calculateMerchantTotal(){
+
+  const bars=parseInt(merchantBars.value)||0;
+  const crowns=parseInt(merchantCrowns.value)||0;
+  const bits=parseInt(merchantBits.value)||0;
+  const pieces=parseInt(merchantPieces.value)||0;
+  const towers=parseInt(merchantTowers.value)||0;
+  const copper=parseInt(merchantCopper.value)||0;
+
+  const quantity=parseInt(merchantQuantity.value);
+
+  if(!quantity||quantity<1){
+
+    merchantResults.innerHTML=`
+      The merchant squints suspiciously.<br><br>
+      Quantity must be at least 1.
+    `;
+
+    scrollToResults("merchantResults");
+
+    return;
+  }
+
+  const itemCopper=
+    (bars*972)+
+    (crowns*324)+
+    (bits*54)+
+    (pieces*18)+
+    (towers*3)+
+    copper;
+
+  const totalCopper=itemCopper*quantity;
+
+  merchantResults.innerHTML=`
+    <strong>Price Per Item:</strong><br>
+    ${formatBreakdown(collapseCoins(itemCopper))}<br><br>
+
+    <strong>Quantity:</strong> ${quantity}<br><br>
+
+    <strong>Total Cost:</strong><br>
+    ${formatBreakdown(collapseCoins(totalCopper))}
+  `;
+
+  scrollToResults("merchantResults");
+}
+
+
+/* =============================
+   Percentage Calculator
+============================= */
+
+function calculatePercentage(){
+
+  let total=parseQuickEntry(percentQuickEntry.value);
+
+  let percent=parseFloat(percentValue.value);
+
+  if(!total||isNaN(percent)){
+
+    utilityResults.innerHTML="Enter valid values.";
+
+    scrollToResults("utilityResults");
+
+    return;
+  }
+
+  let value=Math.floor(total*(percent/100));
+
+  utilityResults.innerHTML=`
+    ${percent}% = ${formatBreakdown(collapseCoins(value))}
+  `;
+
+  scrollToResults("utilityResults");
+}
+
+
+/* =============================
+   Break Coins Down
+============================= */
+
+function breakCoins(){
+
+  let unit=breakUnit.value;
+
+  let amount=parseInt(breakAmount.value);
+
+  if(!amount||amount<1){
+
+    utilityResults.innerHTML="Enter a valid amount.";
+
+    scrollToResults("utilityResults");
+
+    return;
+  }
+
+  let totalCopper=amount*TO_COPPER[unit];
+
+  let output=[];
+
+  let startIndex=UNITS.indexOf(unit);
+
+  for(let i=startIndex+1;i<UNITS.length;i++){
+
+    let smallerUnit=UNITS[i];
+
+    let value=Math.floor(
+      totalCopper/TO_COPPER[smallerUnit]
+    );
+
+    if(value>0){
+
+      output.push(
+        `${value} ${value===1
+          ? smallerUnit
+          : smallerUnit+"s"}`
+      );
+    }
+  }
+
+  utilityResults.innerHTML=`
+    <strong>Full breakdown of ${amount} ${unit}${amount>1?"s":""}:</strong><br><br>
+    ${output.join("<br>")}
+  `;
+
+  scrollToResults("utilityResults");
+}
+
+
+/* =============================
+   Reset Everything
+============================= */
+
+function clearAll(){
+
+  // Clear all text + number inputs
+  document
+    .querySelectorAll("input")
+    .forEach(i => i.value = "");
+
+  // Reset result boxes
+  results.innerHTML = "Treasury ledger ready.";
+
+  merchantResults.innerHTML =
+    "Merchant ledger ready.";
+
+  utilityResults.innerHTML =
+    "Utility ledger ready.";
+
+  // Smooth scroll back to top of current tab
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+</script>
+
+</body>
+</html>
