@@ -1,0 +1,2878 @@
+<!doctype html>
+<!--
+Hynafol Counting House Tools
+Original Coin Converter by Shantelle Andrews
+-->
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Hynafol Counting House Tools</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel&family=Cormorant+Garamond&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    /* Universal box sizing fix */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    /* Base page styling */
+    body {
+      font-family: "Cormorant Garamond", serif;
+      margin: 20px;
+
+      background: linear-gradient(
+        to bottom,
+        #7b5236,
+        #5a3b29
+      );
+
+      color: #2f241b;
+    }
+
+    /* Main title */
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: "Cinzel", serif;
+    }
+
+    h1 {
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    /* Top banner image */
+    .banner {
+      width: 122%;
+      max-width: none;
+      display: block;
+
+      margin-top: -20px;
+      margin-left: -11%;
+      margin-bottom: 10px;
+
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Main app container */
+    .container {
+      max-width: 700px;
+      margin: auto;
+
+      background: linear-gradient(
+        to bottom,
+        #f8f1e4,
+        #efe3cf
+      );
+
+      padding: 20px;
+      border-radius: 18px;
+
+      box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.35);
+
+      border: 2px solid #d6c2a1;
+
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Section labels */
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    /* Inputs */
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
+
+      border: 1px solid #b9aa96;
+      border-radius: 8px;
+
+      font-size: 16px;
+      font-family: "Cormorant Garamond", serif;
+
+      background: #fffdf8;
+      color: #2f241b;
+    }
+
+    /* Buttons */
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+
+      border: none;
+      border-radius: 8px;
+
+      background: #5a3e2b;
+      color: white;
+
+      font-size: 16px;
+      font-family: "Cormorant Garamond", serif;
+      font-weight: bold;
+
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #6d4c36;
+    }
+
+    .danger-button {
+      background: #7e2f2a;
+    }
+
+    .danger-button:hover {
+      background: #61231f;
+    }
+
+    .secondary-button {
+      background: #79614d;
+    }
+
+    .secondary-button:hover {
+      background: #614d3d;
+    }
+
+    /* Results area */
+    .results {
+      margin-top: 20px;
+      padding: 15px;
+
+      background: #f0e6d8;
+      border: 1px solid #ddcbb4;
+      border-radius: 8px;
+
+      line-height: 1.45;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+
+      margin-top: -90px;
+      margin-bottom: 20px;
+
+      position: relative;
+      z-index: 3;
+    }
+
+    .tab-button {
+      margin-top: 0;
+      min-height: 52px;
+      padding: 8px 5px;
+    }
+
+    .tab-button.active {
+      background: #6d4c36;
+      outline: 2px solid rgba(255, 255, 255, 0.25);
+    }
+
+    /* Hide inactive tabs */
+    .tab-content {
+      display: none;
+    }
+
+    /* Show active tab */
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Buy Me a Coffee button */
+    .coffee-btn {
+      display: inline-block;
+
+      padding: 12px 18px;
+
+      background: #5a3e2b;
+      color: #ffffff;
+
+      text-decoration: none;
+      border-radius: 8px;
+
+      font-size: 16px;
+      font-family: "Cormorant Garamond", serif;
+    }
+
+    .coffee-btn:hover {
+      background: #6d4c36;
+    }
+
+    .small-note {
+      font-size: 14px;
+      color: #5a4b3d;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .unit-note {
+      padding: 10px 12px;
+      margin-bottom: 12px;
+
+      background: rgba(90, 62, 43, 0.08);
+      border-left: 4px solid #5a3e2b;
+      border-radius: 6px;
+
+      line-height: 1.4;
+    }
+
+    .unit-grid {
+      display: grid;
+      grid-template-columns: 1fr 140px;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .button-row button {
+      margin-top: 10px;
+    }
+
+    .unit-card {
+      margin-top: 12px;
+      padding: 12px;
+
+      background: rgba(255, 255, 255, 0.52);
+      border: 1px solid #d6c2a1;
+      border-radius: 8px;
+    }
+
+    .unit-card h3,
+    .unit-card h4 {
+      margin: 0 0 8px;
+    }
+
+    .saved-entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 10px;
+
+      padding: 10px 0;
+      border-bottom: 1px solid #d6c2a1;
+    }
+
+    .saved-entry:last-child {
+      border-bottom: none;
+    }
+
+    .remove-unit {
+      width: auto;
+      margin: 0;
+      padding: 7px 12px;
+    }
+
+    .combined-shopping-list {
+      margin-top: 15px;
+      padding-top: 12px;
+      border-top: 2px solid #c8ad89;
+    }
+
+    .tree-line {
+      margin: 2px 0;
+
+      font-family: monospace;
+      font-size: 0.9rem;
+
+      white-space: pre-wrap;
+    }
+
+    .error {
+      color: #821f1f;
+      font-weight: bold;
+    }
+
+    hr {
+      margin: 20px 0;
+      border: none;
+      border-top: 1px solid #cdb99e;
+    }
+
+    @media (max-width: 650px) {
+      body {
+        margin: 8px;
+      }
+
+      .container {
+        padding: 14px;
+      }
+
+      .banner {
+        width: 120%;
+        margin-left: -10%;
+        margin-top: -14px;
+      }
+
+      .tabs {
+        grid-template-columns: repeat(2, 1fr);
+        margin-top: -65px;
+      }
+
+      .unit-grid,
+      .button-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <img
+    src="hynafol-banner.png"
+    alt="Hynafol Counting House Tools banner"
+    class="banner"
+  >
+
+
+  <!-- =========================
+       TAB BUTTONS
+  ========================= -->
+
+  <div class="tabs">
+
+    <button
+      class="tab-button active"
+      onclick="openTab('treasuryTab', this)"
+    >
+      Treasury
+    </button>
+
+    <button
+      class="tab-button"
+      onclick="openTab('merchantTab', this)"
+    >
+      Merchant
+    </button>
+
+    <button
+      class="tab-button"
+      onclick="openTab('utilitiesTab', this)"
+    >
+      Utilities
+    </button>
+
+    <button
+      class="tab-button"
+      onclick="openTab('unitsTab', this)"
+    >
+      Unit Upgrades
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       TREASURY TAB
+  ========================= -->
+
+  <div class="tab-content active" id="treasuryTab">
+
+    <label for="quickEntry">Quick Entry</label>
+
+    <input
+      type="text"
+      id="quickEntry"
+      placeholder="1 bar 1 crown 5 towers"
+    >
+
+    <label for="bars">Bars</label>
+    <input type="number" id="bars">
+
+    <label for="crowns">Crowns</label>
+    <input type="number" id="crowns">
+
+    <label for="bits">Bits</label>
+    <input type="number" id="bits">
+
+    <label for="pieces">Pieces</label>
+    <input type="number" id="pieces">
+
+    <label for="towers">Towers</label>
+    <input type="number" id="towers">
+
+    <label for="copper">Copper</label>
+    <input type="number" id="copper">
+
+    <button onclick="calculateCoins()">
+      Count Treasury
+    </button>
+
+    <hr>
+
+    <label for="players">
+      Split among adventurers
+    </label>
+
+    <input
+      type="number"
+      id="players"
+      placeholder="Number of adventurers"
+    >
+
+    <button onclick="splitCoins()">
+      Split Treasury
+    </button>
+
+    <div class="results" id="results">
+      Treasury ledger ready.
+    </div>
+
+    <button onclick="clearCoinTools()">
+      Clear the Ledger
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       MERCHANT TAB
+  ========================= -->
+
+  <div class="tab-content" id="merchantTab">
+
+    <label>Merchant Calculator</label>
+
+    <p class="small-note">
+      Enter the price per item, then quantity.
+    </p>
+
+    <label for="merchantBars">Bars</label>
+    <input type="number" id="merchantBars">
+
+    <label for="merchantCrowns">Crowns</label>
+    <input type="number" id="merchantCrowns">
+
+    <label for="merchantBits">Bits</label>
+    <input type="number" id="merchantBits">
+
+    <label for="merchantPieces">Pieces</label>
+    <input type="number" id="merchantPieces">
+
+    <label for="merchantTowers">Towers</label>
+    <input type="number" id="merchantTowers">
+
+    <label for="merchantCopper">Copper</label>
+    <input type="number" id="merchantCopper">
+
+    <label for="merchantQuantity">Quantity</label>
+
+    <input
+      type="number"
+      id="merchantQuantity"
+      placeholder="1"
+    >
+
+    <button onclick="calculateMerchantTotal()">
+      Calculate Total Cost
+    </button>
+
+    <div class="results" id="merchantResults">
+      Merchant ledger ready.
+    </div>
+
+    <button onclick="clearCoinTools()">
+      Clear the Ledger
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       UTILITIES TAB
+  ========================= -->
+
+  <div class="tab-content" id="utilitiesTab">
+
+    <label for="percentQuickEntry">
+      Percentage Calculator
+    </label>
+
+    <input
+      type="text"
+      id="percentQuickEntry"
+      placeholder="1 crown"
+    >
+
+    <input
+      type="number"
+      id="percentValue"
+      placeholder="25%"
+    >
+
+    <button onclick="calculatePercentage()">
+      Calculate Percentage
+    </button>
+
+    <hr>
+
+    <label for="breakUnit">
+      Break Coins Down
+    </label>
+
+    <select id="breakUnit">
+      <option value="bar">Bar</option>
+      <option value="crown">Crown</option>
+      <option value="bit">Bit</option>
+      <option value="piece">Piece</option>
+      <option value="tower">Tower</option>
+    </select>
+
+    <input
+      type="number"
+      id="breakAmount"
+      placeholder="Amount"
+    >
+
+    <button onclick="breakCoins()">
+      Break It Down
+    </button>
+
+    <div class="results" id="utilityResults">
+      Utility ledger ready.
+    </div>
+
+    <button onclick="clearCoinTools()">
+      Clear the Ledger
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       UNIT UPGRADE TAB
+  ========================= -->
+
+  <div class="tab-content" id="unitsTab">
+
+    <div class="unit-note">
+      <strong>Current Peasant exchange:</strong>
+      1 Citizen Card creates 3 Peasants.
+
+      Units created in batches, such as Peasants and Fyrds,
+      round up to the next complete batch.
+    </div>
+
+    <div class="unit-grid">
+
+      <div>
+        <label for="unitSelect">
+          Unit to make
+        </label>
+
+        <select id="unitSelect"></select>
+      </div>
+
+      <div>
+        <label for="unitQty">
+          How many?
+        </label>
+
+        <input
+          id="unitQty"
+          type="number"
+          min="1"
+          step="1"
+          value="1"
+        >
+      </div>
+
+    </div>
+
+    <div class="button-row">
+
+      <button id="planUnitButton">
+        Calculate Upgrade
+      </button>
+
+      <button id="addUnitButton">
+        Add to Upgrade Queue
+      </button>
+
+    </div>
+
+    <div class="results" id="unitResults">
+      Select a unit to begin.
+    </div>
+
+    <div class="results">
+
+      <h2>Upgrade Queue</h2>
+
+      <p class="small-note">
+        Saved on this device until an entry is removed or the queue is cleared.
+      </p>
+
+      <div id="savedPlansList">
+        No saved upgrades yet.
+      </div>
+
+      <div id="combinedShoppingList"></div>
+
+      <div class="button-row">
+
+        <button
+          id="copyShoppingListButton"
+          class="secondary-button"
+        >
+          Copy Shopping List
+        </button>
+
+        <button
+          id="clearUnitQueueButton"
+          class="danger-button"
+        >
+          Clear All / Start Over
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- Buy Me a Coffee -->
+
+  <p style="text-align:center; margin-top:18px;">
+    Enjoying the tool?
+  </p>
+
+  <div style="text-align:center; margin-top:10px;">
+
+    <a
+      href="https://www.buymeacoffee.com/Niamh.Isolda"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="coffee-btn"
+    >
+      💰 Toss a Coin to the Converter
+    </a>
+
+  </div>
+
+</div>
+
+
+<script>
+  /* =============================
+     Tab Switching
+  ============================= */
+
+  function openTab(tabId, button) {
+    document
+      .querySelectorAll(".tab-content")
+      .forEach(tab => {
+        tab.classList.remove("active");
+      });
+
+    document
+      .querySelectorAll(".tab-button")
+      .forEach(tabButton => {
+        tabButton.classList.remove("active");
+      });
+
+    document
+      .getElementById(tabId)
+      .classList.add("active");
+
+    button.classList.add("active");
+  }
+
+
+  /* Smooth scroll to results */
+  function scrollToResults(id) {
+    document
+      .getElementById(id)
+      .scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+  }
+
+
+  /* =============================
+     Conversion Constants
+  ============================= */
+
+  const TO_COPPER = {
+    copper: 1,
+    tower: 3,
+    piece: 18,
+    bit: 54,
+    crown: 324,
+    bar: 972
+  };
+
+  const COIN_UNITS = [
+    "bar",
+    "crown",
+    "bit",
+    "piece",
+    "tower",
+    "copper"
+  ];
+
+
+  /* =============================
+     Parsing Helpers
+  ============================= */
+
+  function parseQuickEntry(line) {
+    let total = 0;
+
+    const matches = line.matchAll(
+      /(\d+)\s*([a-zA-Z]+)/g
+    );
+
+    for (const match of matches) {
+      const amount = parseInt(match[1], 10);
+
+      let unit = match[2].toLowerCase();
+
+      const aliases = {
+        c: "copper",
+        copper: "copper",
+        coppers: "copper",
+
+        t: "tower",
+        tower: "tower",
+        towers: "tower",
+
+        p: "piece",
+        piece: "piece",
+        pieces: "piece",
+
+        b: "bit",
+        bit: "bit",
+        bits: "bit",
+
+        cr: "crown",
+        crown: "crown",
+        crowns: "crown",
+
+        br: "bar",
+        bar: "bar",
+        bars: "bar"
+      };
+
+      unit = aliases[unit] || unit;
+
+      if (TO_COPPER[unit]) {
+        total += amount * TO_COPPER[unit];
+      }
+    }
+
+    return total;
+  }
+
+
+  /* Collapse copper into optimal coins */
+  function collapseCoins(copperAmount) {
+    const result = {};
+
+    let remaining = Math.max(
+      0,
+      Math.floor(copperAmount)
+    );
+
+    for (const unit of COIN_UNITS) {
+      result[unit] = Math.floor(
+        remaining / TO_COPPER[unit]
+      );
+
+      remaining -=
+        result[unit] * TO_COPPER[unit];
+    }
+
+    return result;
+  }
+
+
+  /* Format readable output */
+  function formatBreakdown(breakdown) {
+    return COIN_UNITS
+      .filter(unit => breakdown[unit] > 0)
+      .map(unit => {
+        const amount = breakdown[unit];
+
+        return `${amount} ${
+          amount === 1
+            ? unit
+            : unit + "s"
+        }`;
+      })
+      .join(", ") || "0 copper";
+  }
+
+
+  function getNumber(id) {
+    return (
+      parseInt(
+        document.getElementById(id).value,
+        10
+      ) || 0
+    );
+  }
+
+
+  /* =============================
+     Treasury Calculator
+  ============================= */
+
+  function getTotalCopper() {
+    const quickEntry = document
+      .getElementById("quickEntry")
+      .value
+      .trim();
+
+    if (quickEntry) {
+      return parseQuickEntry(quickEntry);
+    }
+
+    return (
+      getNumber("bars") * 972 +
+      getNumber("crowns") * 324 +
+      getNumber("bits") * 54 +
+      getNumber("pieces") * 18 +
+      getNumber("towers") * 3 +
+      getNumber("copper")
+    );
+  }
+
+
+  function calculateCoins() {
+    const total = getTotalCopper();
+
+    const breakdown = collapseCoins(total);
+
+    document
+      .getElementById("results")
+      .innerHTML = `
+        <strong>Total:</strong>
+        ${total} copper
+
+        <br><br>
+
+        ${formatBreakdown(breakdown)}
+      `;
+
+    scrollToResults("results");
+  }
+
+
+  /* Split treasury */
+  function splitCoins() {
+    const total = getTotalCopper();
+
+    const numberOfPlayers =
+      getNumber("players");
+
+    const results =
+      document.getElementById("results");
+
+    if (numberOfPlayers < 1) {
+      results.innerHTML = `
+        The quartermaster squints suspiciously.
+
+        <br><br>
+
+        Need at least 1 adventurer.
+      `;
+
+      scrollToResults("results");
+
+      return;
+    }
+
+    const amountPerPlayer =
+      Math.floor(total / numberOfPlayers);
+
+    const leftover =
+      total % numberOfPlayers;
+
+    results.innerHTML = `
+      <strong>
+        Each Adventurer Receives:
+      </strong>
+
+      <br>
+
+      ${formatBreakdown(
+        collapseCoins(amountPerPlayer)
+      )}
+
+      <br><br>
+
+      <strong>
+        Left on the Counting Table:
+      </strong>
+
+      <br>
+
+      ${formatBreakdown(
+        collapseCoins(leftover)
+      )}
+    `;
+
+    scrollToResults("results");
+  }
+
+
+  /* =============================
+     Merchant Calculator
+  ============================= */
+
+  function calculateMerchantTotal() {
+    const quantity =
+      getNumber("merchantQuantity");
+
+    const results =
+      document.getElementById(
+        "merchantResults"
+      );
+
+    if (quantity < 1) {
+      results.innerHTML = `
+        The merchant squints suspiciously.
+
+        <br><br>
+
+        Quantity must be at least 1.
+      `;
+
+      scrollToResults(
+        "merchantResults"
+      );
+
+      return;
+    }
+
+    const itemCopper =
+      getNumber("merchantBars") * 972 +
+      getNumber("merchantCrowns") * 324 +
+      getNumber("merchantBits") * 54 +
+      getNumber("merchantPieces") * 18 +
+      getNumber("merchantTowers") * 3 +
+      getNumber("merchantCopper");
+
+    const totalCopper =
+      itemCopper * quantity;
+
+    results.innerHTML = `
+      <strong>Price Per Item:</strong>
+
+      <br>
+
+      ${formatBreakdown(
+        collapseCoins(itemCopper)
+      )}
+
+      <br><br>
+
+      <strong>Quantity:</strong>
+      ${quantity}
+
+      <br><br>
+
+      <strong>Total Cost:</strong>
+
+      <br>
+
+      ${formatBreakdown(
+        collapseCoins(totalCopper)
+      )}
+    `;
+
+    scrollToResults(
+      "merchantResults"
+    );
+  }
+
+
+  /* =============================
+     Percentage Calculator
+  ============================= */
+
+  function calculatePercentage() {
+    const total = parseQuickEntry(
+      document
+        .getElementById(
+          "percentQuickEntry"
+        )
+        .value
+    );
+
+    const percent = parseFloat(
+      document
+        .getElementById(
+          "percentValue"
+        )
+        .value
+    );
+
+    const results =
+      document.getElementById(
+        "utilityResults"
+      );
+
+    if (!total || Number.isNaN(percent)) {
+      results.textContent =
+        "Enter valid values.";
+
+      scrollToResults(
+        "utilityResults"
+      );
+
+      return;
+    }
+
+    const value = Math.floor(
+      total * (percent / 100)
+    );
+
+    results.innerHTML = `
+      ${percent}% =
+      ${formatBreakdown(
+        collapseCoins(value)
+      )}
+    `;
+
+    scrollToResults(
+      "utilityResults"
+    );
+  }
+
+
+  /* =============================
+     Break Coins Down
+  ============================= */
+
+  function breakCoins() {
+    const unit = document
+      .getElementById("breakUnit")
+      .value;
+
+    const amount =
+      getNumber("breakAmount");
+
+    const results =
+      document.getElementById(
+        "utilityResults"
+      );
+
+    if (amount < 1) {
+      results.textContent =
+        "Enter a valid amount.";
+
+      scrollToResults(
+        "utilityResults"
+      );
+
+      return;
+    }
+
+    const totalCopper =
+      amount * TO_COPPER[unit];
+
+    const output = [];
+
+    const startIndex =
+      COIN_UNITS.indexOf(unit);
+
+    for (
+      let index = startIndex + 1;
+      index < COIN_UNITS.length;
+      index++
+    ) {
+      const smallerUnit =
+        COIN_UNITS[index];
+
+      const value = Math.floor(
+        totalCopper /
+        TO_COPPER[smallerUnit]
+      );
+
+      if (value > 0) {
+        output.push(
+          `${value} ${
+            value === 1
+              ? smallerUnit
+              : smallerUnit + "s"
+          }`
+        );
+      }
+    }
+
+    results.innerHTML = `
+      <strong>
+        Full breakdown of
+        ${amount}
+        ${unit}${amount > 1 ? "s" : ""}:
+      </strong>
+
+      <br><br>
+
+      ${output.join("<br>")}
+    `;
+
+    scrollToResults(
+      "utilityResults"
+    );
+  }
+
+
+  /* =============================
+     Clear Coin Tools
+  ============================= */
+
+  function clearCoinTools() {
+    document
+      .querySelectorAll(
+        "#treasuryTab input," +
+        "#merchantTab input," +
+        "#utilitiesTab input"
+      )
+      .forEach(input => {
+        input.value = "";
+      });
+
+    document
+      .getElementById("results")
+      .textContent =
+        "Treasury ledger ready.";
+
+    document
+      .getElementById(
+        "merchantResults"
+      )
+      .textContent =
+        "Merchant ledger ready.";
+
+    document
+      .getElementById(
+        "utilityResults"
+      )
+      .textContent =
+        "Utility ledger ready.";
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+
+  /* =============================
+     Unit Upgrade Recipes
+  ============================= */
+
+  const UNIT_RECIPES = {
+    "Peasant": {
+      createdAt: "Farm",
+      outputQty: 3,
+      ingredients: [
+        {
+          item: "Copper",
+          qty: 2
+        },
+        {
+          item: "Citizen Card",
+          qty: 1
+        }
+      ]
+    },
+
+    "Lumberjack": {
+      createdAt: "Orchard",
+      ingredients: [
+        {
+          item: "Copper",
+          qty: 2
+        },
+        {
+          item: "Peasant",
+          qty: 1
+        }
+      ]
+    },
+
+    "Mason": {
+      createdAt: "Quarry",
+      ingredients: [
+        {
+          item: "Copper",
+          qty: 2
+        },
+        {
+          item: "Peasant",
+          qty: 1
+        }
+      ]
+    },
+
+    "Miner": {
+      createdAt: "Mine",
+      ingredients: [
+        {
+          item: "Copper",
+          qty: 2
+        },
+        {
+          item: "Peasant",
+          qty: 1
+        }
+      ]
+    },
+
+    "Farrier": {
+      createdAt: "Stable",
+      ingredients: [
+        {
+          item: "Copper",
+          qty: 2
+        },
+        {
+          item: "Peasant",
+          qty: 1
+        }
+      ]
+    },
+
+    "Pelter": {
+      createdAt: "Camp",
+      ingredients: [
+        {
+          item: "Copper",
+          qty: 2
+        },
+        {
+          item: "Peasant",
+          qty: 1
+        }
+      ]
+    },
+
+    "Mercator": {
+      createdAt: "Market",
+      ingredients: [
+        {
+          item: "Copper",
+          qty: 2
+        },
+        {
+          item: "Peasant",
+          qty: 1
+        }
+      ]
+    },
+
+    "Fidelis": {
+      createdAt: "Shrine",
+      ingredients: [
+        {
+          item: "Copper",
+          qty: 2
+        },
+        {
+          item: "Peasant",
+          qty: 1
+        }
+      ]
+    },
+
+    "Arcanist": {
+      createdAt: "Arcane Circle",
+      ingredients: [
+        {
+          item: "Copper",
+          qty: 2
+        },
+        {
+          item: "Peasant",
+          qty: 1
+        }
+      ]
+    },
+
+    "Carpenter": {
+      createdAt: "Lumber Mill",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Lumberjack",
+          qty: 2
+        },
+        {
+          item: "Wood",
+          qty: 2
+        }
+      ]
+    },
+
+    "Master Mason": {
+      createdAt: "Masonry",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Mason",
+          qty: 2
+        },
+        {
+          item: "Stone",
+          qty: 2
+        }
+      ]
+    },
+
+    "Blacksmith": {
+      createdAt: "Smithy",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Miner",
+          qty: 2
+        },
+        {
+          item: "Metal",
+          qty: 2
+        }
+      ]
+    },
+
+    "Master Butcher": {
+      createdAt: "Butcher",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Farrier",
+          qty: 2
+        },
+        {
+          item: "Livestock",
+          qty: 2
+        }
+      ]
+    },
+
+    "Master Tanner": {
+      createdAt: "Tanner",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Pelter",
+          qty: 2
+        },
+        {
+          item: "Fur",
+          qty: 2
+        }
+      ]
+    },
+
+    "Reeve": {
+      createdAt: "Estate",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Peasant",
+          qty: 2
+        },
+        {
+          item: "Victual",
+          qty: 1
+        }
+      ]
+    },
+
+    "Innkeeper": {
+      createdAt: "Inn",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 3
+        },
+        {
+          item: "Peasant",
+          qty: 4
+        },
+        {
+          item: "Rarities",
+          qty: 4
+        }
+      ]
+    },
+
+    "Tinkerer": {
+      createdAt: "Plaza",
+      ingredients: [
+        {
+          item: "Piece",
+          qty: 1
+        },
+        {
+          item: "Peasant",
+          qty: 2
+        },
+        {
+          item: "Scholar",
+          qty: 1
+        },
+        {
+          item: "Scout",
+          qty: 1
+        }
+      ]
+    },
+
+    "Pontifex": {
+      createdAt: "Temple",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Fidelis",
+          qty: 2
+        },
+        {
+          item: "Piety",
+          qty: 2
+        }
+      ]
+    },
+
+    "Artifex": {
+      createdAt: "Mage Tower",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Arcanist",
+          qty: 2
+        },
+        {
+          item: "Arcana",
+          qty: 2
+        }
+      ]
+    },
+
+    "Fyrd": {
+      createdAt: "Wall",
+      outputQty: 2,
+      ingredients: [
+        {
+          item: "Copper",
+          qty: 2
+        },
+        {
+          item: "Peasant",
+          qty: 1
+        }
+      ]
+    },
+
+    "Scout": {
+      createdAt: "Watchtower",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Peasant",
+          qty: 2
+        }
+      ]
+    },
+
+    "Mariner": {
+      createdAt: "Harbor",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Peasant",
+          qty: 1
+        },
+        {
+          item: "Fish",
+          qty: 1
+        }
+      ]
+    },
+
+    "Mercenary": {
+      createdAt: "Road",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Peasant",
+          qty: 1
+        },
+        {
+          item: "Fur",
+          qty: 1
+        },
+        {
+          item: "Metal",
+          qty: 1
+        }
+      ]
+    },
+
+    "Ship Master": {
+      createdAt: "Port",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 3
+        },
+        {
+          item: "Mariner",
+          qty: 4
+        },
+        {
+          item: "Fish",
+          qty: 4
+        }
+      ]
+    },
+
+    "Ward": {
+      createdAt: "Fort",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Peasant",
+          qty: 1
+        },
+        {
+          item: "Fur",
+          qty: 1
+        },
+        {
+          item: "Wood",
+          qty: 1
+        }
+      ]
+    },
+
+    "Man-At-Arms": {
+      createdAt: "Fort",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Fyrd",
+          qty: 1
+        },
+        {
+          item: "Weaponworks",
+          qty: 1
+        },
+        {
+          item: "Armor",
+          qty: 1
+        }
+      ]
+    },
+
+    "Archer": {
+      createdAt: "Noble Keep",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 3
+        },
+        {
+          item: "Fyrd",
+          qty: 2
+        },
+        {
+          item: "Weaponworks",
+          qty: 1
+        }
+      ]
+    },
+
+    "Thegn": {
+      createdAt: "Motte-and-Bailey",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Ward",
+          qty: 2
+        },
+        {
+          item: "Weaponworks",
+          qty: 2
+        },
+        {
+          item: "Fur",
+          qty: 2
+        }
+      ]
+    },
+
+    "Knight": {
+      createdAt: "Barracks",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 3
+        },
+        {
+          item: "Ward",
+          qty: 2
+        },
+        {
+          item: "Weaponworks",
+          qty: 2
+        },
+        {
+          item: "Armor",
+          qty: 2
+        }
+      ]
+    },
+
+    "Cataphract": {
+      createdAt: "Castle",
+      ingredients: [
+        {
+          item: "Piece",
+          qty: 1
+        },
+        {
+          item: "Knight",
+          qty: 2
+        },
+        {
+          item: "Weaponworks",
+          qty: 4
+        },
+        {
+          item: "Armor",
+          qty: 4
+        },
+        {
+          item: "Fur",
+          qty: 2
+        }
+      ]
+    },
+
+    "Paragon": {
+      createdAt: "Palace",
+      ingredients: [
+        {
+          item: "Piece",
+          qty: 2
+        },
+        {
+          item: "Cataphract",
+          qty: 2
+        },
+        {
+          item: "Weaponworks",
+          qty: 8
+        },
+        {
+          item: "Armor",
+          qty: 8
+        },
+        {
+          item: "Fur",
+          qty: 2
+        },
+        {
+          item: "Victuals",
+          qty: 2
+        }
+      ]
+    },
+
+    "Malefactor": {
+      createdAt: "Dungeon",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 3
+        },
+        {
+          item: "Peasant",
+          qty: 4
+        },
+        {
+          item: "Rarities",
+          qty: 4
+        }
+      ]
+    },
+
+    "Pirate": {
+      createdAt: "Dungeon",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Mariner",
+          qty: 1
+        },
+        {
+          item: "Malefactor",
+          qty: 1
+        }
+      ]
+    },
+
+    "Spy": {
+      createdAt: "Dungeon",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Peasant",
+          qty: 2
+        },
+        {
+          item: "Rarities",
+          qty: 2
+        }
+      ]
+    },
+
+    "Bandit": {
+      createdAt: "Dungeon",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Scout",
+          qty: 1
+        },
+        {
+          item: "Malefactor",
+          qty: 1
+        }
+      ]
+    },
+
+    "Herberist": {
+      createdAt: "Botanical Garden",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 3
+        },
+        {
+          item: "Peasant",
+          qty: 4
+        },
+        {
+          item: "Rarities",
+          qty: 4
+        }
+      ]
+    },
+
+    "Auctor": {
+      createdAt: "Theater",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 1
+        },
+        {
+          item: "Reeve",
+          qty: 2
+        }
+      ]
+    },
+
+    "Master Merchant": {
+      createdAt: "Bazaar",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 3
+        },
+        {
+          item: "Peasant",
+          qty: 4
+        },
+        {
+          item: "Rarities",
+          qty: 4
+        }
+      ]
+    },
+
+    "Ignifer": {
+      createdAt: "Lighthouse",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 3
+        },
+        {
+          item: "Peasant",
+          qty: 4
+        },
+        {
+          item: "Rarities",
+          qty: 4
+        }
+      ]
+    },
+
+    "Burgess": {
+      createdAt: "Haven",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 3
+        },
+        {
+          item: "Peasant",
+          qty: 4
+        },
+        {
+          item: "Rarities",
+          qty: 4
+        }
+      ]
+    },
+
+    "Scholar": {
+      createdAt: "University",
+      ingredients: [
+        {
+          item: "Tower",
+          qty: 3
+        },
+        {
+          item: "Reeve",
+          qty: 4
+        },
+        {
+          item: "Rarities",
+          qty: 4
+        }
+      ]
+    }
+  };
+
+
+  /* =============================
+     Unit Upgrade Storage
+  ============================= */
+
+  const UNIT_QUEUE_KEY =
+    "hynafolUnitUpgradeQueueV1";
+
+  const UNIT_LAST_SEARCH_KEY =
+    "hynafolUnitLastSearchV1";
+
+
+  function formatUnitQuantity(value) {
+    if (Number.isInteger(value)) {
+      return String(value);
+    }
+
+    return String(
+      Math.round(value * 100) / 100
+    );
+  }
+
+
+  function pluralizeUnit(item, quantity) {
+    if (quantity === 1) {
+      return item;
+    }
+
+    const irregular = {
+      Fyrd: "Fyrds",
+      "Man-At-Arms": "Men-At-Arms",
+      "Citizen Card": "Citizen Cards"
+    };
+
+    return irregular[item] || item;
+  }
+
+
+  function addToTotals(
+    totals,
+    item,
+    quantity
+  ) {
+    totals[item] =
+      (totals[item] || 0) +
+      quantity;
+  }
+
+
+  function populateUnitSelect() {
+    const unitSelect =
+      document.getElementById(
+        "unitSelect"
+      );
+
+    unitSelect.innerHTML =
+      Object
+        .keys(UNIT_RECIPES)
+        .sort((first, second) =>
+          first.localeCompare(second)
+        )
+        .map(unitName => {
+          return `
+            <option value="${unitName}">
+              ${unitName}
+            </option>
+          `;
+        })
+        .join("");
+
+    restoreLastUnitSearch();
+  }
+
+
+  /* =============================
+     Unit Upgrade Planning
+  ============================= */
+
+  function planUnit(
+    item,
+    desiredQuantity,
+    path = []
+  ) {
+    const recipe =
+      UNIT_RECIPES[item];
+
+    if (!recipe) {
+      return {
+        item,
+        desiredQuantity,
+
+        rawTotals: {
+          [item]: desiredQuantity
+        },
+
+        subSections: [],
+
+        treeLines: [
+          `${formatUnitQuantity(
+            desiredQuantity
+          )} ${item}`
+        ]
+      };
+    }
+
+    if (path.includes(item)) {
+      throw new Error(
+        `Recipe loop found: ${
+          [...path, item].join(" > ")
+        }`
+      );
+    }
+
+    const outputQuantity =
+      recipe.outputQty || 1;
+
+    const batches = Math.ceil(
+      desiredQuantity /
+      outputQuantity
+    );
+
+    const producedQuantity =
+      batches * outputQuantity;
+
+    const directIngredients =
+      recipe.ingredients.map(
+        ingredient => {
+          return {
+            item: ingredient.item,
+
+            quantity:
+              ingredient.qty *
+              batches
+          };
+        }
+      );
+
+    const rawTotals = {};
+
+    const subSections = [];
+
+    const treeLines = [
+      `${formatUnitQuantity(
+        desiredQuantity
+      )} ${item} (` +
+      `${batches} batch${
+        batches === 1 ? "" : "es"
+      }, creates ` +
+      `${formatUnitQuantity(
+        producedQuantity
+      )})`
+    ];
+
+    for (
+      const ingredient
+      of directIngredients
+    ) {
+      if (
+        UNIT_RECIPES[
+          ingredient.item
+        ]
+      ) {
+        const childPlan = planUnit(
+          ingredient.item,
+          ingredient.quantity,
+          [...path, item]
+        );
+
+        subSections.push(
+          childPlan,
+          ...childPlan.subSections
+        );
+
+        for (
+          const [
+            rawItem,
+            rawQuantity
+          ]
+          of Object.entries(
+            childPlan.rawTotals
+          )
+        ) {
+          addToTotals(
+            rawTotals,
+            rawItem,
+            rawQuantity
+          );
+        }
+
+        treeLines.push(
+          `└─ ${
+            formatUnitQuantity(
+              ingredient.quantity
+            )
+          } ${ingredient.item}`
+        );
+
+        childPlan
+          .treeLines
+          .slice(1)
+          .forEach(line => {
+            treeLines.push(
+              `   ${line}`
+            );
+          });
+      } else {
+        addToTotals(
+          rawTotals,
+          ingredient.item,
+          ingredient.quantity
+        );
+
+        treeLines.push(
+          `└─ ${
+            formatUnitQuantity(
+              ingredient.quantity
+            )
+          } ${ingredient.item}`
+        );
+      }
+    }
+
+    return {
+      item,
+      desiredQuantity,
+
+      createdAt:
+        recipe.createdAt ||
+        "Unknown",
+
+      batches,
+      producedQuantity,
+
+      directIngredients,
+
+      rawTotals,
+      subSections,
+      treeLines
+    };
+  }
+
+
+  function unitIngredientListHtml(
+    ingredients
+  ) {
+    return `
+      <ul>
+        ${
+          ingredients
+            .map(ingredient => {
+              return `
+                <li>
+                  ${
+                    formatUnitQuantity(
+                      ingredient.quantity
+                    )
+                  }
+                  ${
+                    pluralizeUnit(
+                      ingredient.item,
+                      ingredient.quantity
+                    )
+                  }
+                </li>
+              `;
+            })
+            .join("")
+        }
+      </ul>
+    `;
+  }
+
+
+  function renderUnitPlan(plan) {
+    const results =
+      document.getElementById(
+        "unitResults"
+      );
+
+    const rawMaterials =
+      Object
+        .entries(plan.rawTotals)
+        .sort((first, second) =>
+          first[0].localeCompare(
+            second[0]
+          )
+        )
+        .map(
+          ([item, quantity]) => {
+            return `
+              <li>
+                ${
+                  formatUnitQuantity(
+                    quantity
+                  )
+                }
+                ${
+                  pluralizeUnit(
+                    item,
+                    quantity
+                  )
+                }
+              </li>
+            `;
+          }
+        )
+        .join("");
+
+    const subcomponentDetails =
+      plan.subSections.length
+        ? plan.subSections
+            .map(section => {
+              return `
+                <div class="unit-card">
+
+                  <h4>
+                    ${
+                      formatUnitQuantity(
+                        section.desiredQuantity
+                      )
+                    }
+
+                    ${
+                      pluralizeUnit(
+                        section.item,
+                        section.desiredQuantity
+                      )
+                    }
+                  </h4>
+
+                  <p>
+                    <strong>
+                      Created at:
+                    </strong>
+
+                    ${section.createdAt}
+                  </p>
+
+                  <p>
+                    ${
+                      section.batches
+                    }
+
+                    batch${
+                      section.batches === 1
+                        ? ""
+                        : "es"
+                    }
+
+                    creates
+
+                    ${
+                      formatUnitQuantity(
+                        section.producedQuantity
+                      )
+                    }.
+                  </p>
+
+                  ${
+                    unitIngredientListHtml(
+                      section.directIngredients
+                    )
+                  }
+
+                </div>
+              `;
+            })
+            .join("")
+        : `
+            <p>
+              No craftable sub-units
+              are needed.
+            </p>
+          `;
+
+    results.innerHTML = `
+      <h2>
+        ${
+          formatUnitQuantity(
+            plan.desiredQuantity
+          )
+        }
+
+        ${
+          pluralizeUnit(
+            plan.item,
+            plan.desiredQuantity
+          )
+        }
+      </h2>
+
+      <p>
+        <strong>Created at:</strong>
+        ${plan.createdAt}
+      </p>
+
+      <p>
+        <strong>Batches needed:</strong>
+        ${plan.batches}.
+
+        This creates
+
+        ${
+          formatUnitQuantity(
+            plan.producedQuantity
+          )
+        }.
+      </p>
+
+      <div class="unit-card">
+
+        <h3>Direct Cost</h3>
+
+        ${
+          unitIngredientListHtml(
+            plan.directIngredients
+          )
+        }
+
+      </div>
+
+      <div class="unit-card">
+
+        <h3>Total Raw Materials</h3>
+
+        <ul>
+          ${rawMaterials}
+        </ul>
+
+      </div>
+
+      <div class="unit-card">
+
+        <h3>Sub-Unit Breakdown</h3>
+
+        ${subcomponentDetails}
+
+      </div>
+
+      <div class="unit-card">
+
+        <h3>Upgrade Tree</h3>
+
+        ${
+          plan.treeLines
+            .map(line => {
+              return `
+                <div class="tree-line">
+                  ${line}
+                </div>
+              `;
+            })
+            .join("")
+        }
+
+      </div>
+    `;
+
+    scrollToResults(
+      "unitResults"
+    );
+  }
+
+
+  function getCurrentUnitSelection() {
+    const unit = document
+      .getElementById("unitSelect")
+      .value;
+
+    const quantity = Number(
+      document
+        .getElementById("unitQty")
+        .value
+    );
+
+    if (
+      !unit ||
+      !UNIT_RECIPES[unit]
+    ) {
+      throw new Error(
+        "Pick a valid unit first."
+      );
+    }
+
+    if (
+      !Number.isInteger(quantity) ||
+      quantity < 1
+    ) {
+      throw new Error(
+        "Enter a whole number of units."
+      );
+    }
+
+    localStorage.setItem(
+      UNIT_LAST_SEARCH_KEY,
+
+      JSON.stringify({
+        unit,
+        quantity
+      })
+    );
+
+    return {
+      unit,
+      quantity
+    };
+  }
+
+
+  function calculateSelectedUnit() {
+    const results =
+      document.getElementById(
+        "unitResults"
+      );
+
+    try {
+      const {
+        unit,
+        quantity
+      } =
+        getCurrentUnitSelection();
+
+      const plan =
+        planUnit(
+          unit,
+          quantity
+        );
+
+      renderUnitPlan(plan);
+    } catch (error) {
+      results.innerHTML = `
+        <p class="error">
+          ${error.message}
+        </p>
+      `;
+    }
+  }
+
+
+  /* =============================
+     Upgrade Queue
+  ============================= */
+
+  function loadUnitQueue() {
+    try {
+      const savedQueue =
+        JSON.parse(
+          localStorage.getItem(
+            UNIT_QUEUE_KEY
+          ) || "[]"
+        );
+
+      return Array.isArray(savedQueue)
+        ? savedQueue
+        : [];
+    } catch {
+      return [];
+    }
+  }
+
+
+  function saveUnitQueue(queue) {
+    localStorage.setItem(
+      UNIT_QUEUE_KEY,
+      JSON.stringify(queue)
+    );
+  }
+
+
+  function addSelectedUnitToQueue() {
+    const results =
+      document.getElementById(
+        "unitResults"
+      );
+
+    try {
+      const {
+        unit,
+        quantity
+      } =
+        getCurrentUnitSelection();
+
+      const plan =
+        planUnit(
+          unit,
+          quantity
+        );
+
+      const queue =
+        loadUnitQueue();
+
+      queue.push({
+        unit,
+        quantity,
+
+        rawTotals:
+          plan.rawTotals,
+
+        savedAt:
+          new Date().toISOString()
+      });
+
+      saveUnitQueue(queue);
+
+      renderUnitQueue();
+
+      renderUnitPlan(plan);
+    } catch (error) {
+      results.innerHTML = `
+        <p class="error">
+          ${error.message}
+        </p>
+      `;
+    }
+  }
+
+
+  function combineUnitQueue(queue) {
+    const totals = {};
+
+    queue.forEach(entry => {
+      Object
+        .entries(
+          entry.rawTotals || {}
+        )
+        .forEach(
+          ([item, quantity]) => {
+            addToTotals(
+              totals,
+              item,
+              quantity
+            );
+          }
+        );
+    });
+
+    return totals;
+  }
+
+
+  function renderUnitQueue() {
+    const queue =
+      loadUnitQueue();
+
+    const list =
+      document.getElementById(
+        "savedPlansList"
+      );
+
+    const combined =
+      document.getElementById(
+        "combinedShoppingList"
+      );
+
+    if (!queue.length) {
+      list.textContent =
+        "No saved upgrades yet.";
+
+      combined.innerHTML = "";
+
+      return;
+    }
+
+    list.innerHTML =
+      queue
+        .map((entry, index) => {
+          return `
+            <div class="saved-entry">
+
+              <strong>
+                ${
+                  formatUnitQuantity(
+                    entry.quantity
+                  )
+                }
+
+                ${
+                  pluralizeUnit(
+                    entry.unit,
+                    entry.quantity
+                  )
+                }
+              </strong>
+
+              <button
+                type="button"
+                class="remove-unit"
+                onclick="removeUnitQueueEntry(${index})"
+              >
+                Remove
+              </button>
+
+            </div>
+          `;
+        })
+        .join("");
+
+    const totals =
+      combineUnitQueue(queue);
+
+    const rows =
+      Object
+        .entries(totals)
+        .sort((first, second) =>
+          first[0].localeCompare(
+            second[0]
+          )
+        )
+        .map(
+          ([item, quantity]) => {
+            return `
+              <li>
+                ${
+                  formatUnitQuantity(
+                    quantity
+                  )
+                }
+
+                ${
+                  pluralizeUnit(
+                    item,
+                    quantity
+                  )
+                }
+              </li>
+            `;
+          }
+        )
+        .join("");
+
+    combined.innerHTML = `
+      <div class="combined-shopping-list">
+
+        <h3>
+          Combined Shopping List
+        </h3>
+
+        <ul>
+          ${rows}
+        </ul>
+
+      </div>
+    `;
+  }
+
+
+  function removeUnitQueueEntry(index) {
+    const queue =
+      loadUnitQueue();
+
+    queue.splice(index, 1);
+
+    saveUnitQueue(queue);
+
+    renderUnitQueue();
+  }
+
+
+  function clearUnitQueue() {
+    localStorage.removeItem(
+      UNIT_QUEUE_KEY
+    );
+
+    localStorage.removeItem(
+      UNIT_LAST_SEARCH_KEY
+    );
+
+    document
+      .getElementById("unitQty")
+      .value = 1;
+
+    document
+      .getElementById(
+        "unitResults"
+      )
+      .textContent =
+        "Select a unit to begin.";
+
+    renderUnitQueue();
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+
+  function restoreLastUnitSearch() {
+    try {
+      const lastSearch =
+        JSON.parse(
+          localStorage.getItem(
+            UNIT_LAST_SEARCH_KEY
+          ) || "null"
+        );
+
+      if (!lastSearch) {
+        return;
+      }
+
+      if (
+        UNIT_RECIPES[
+          lastSearch.unit
+        ]
+      ) {
+        document
+          .getElementById(
+            "unitSelect"
+          )
+          .value =
+            lastSearch.unit;
+      }
+
+      if (
+        Number.isInteger(
+          lastSearch.quantity
+        ) &&
+        lastSearch.quantity > 0
+      ) {
+        document
+          .getElementById(
+            "unitQty"
+          )
+          .value =
+            lastSearch.quantity;
+      }
+    } catch {
+      // Leave the default values in place.
+    }
+  }
+
+
+  async function copyShoppingList() {
+    const queue =
+      loadUnitQueue();
+
+    if (!queue.length) {
+      alert(
+        "The upgrade queue is empty."
+      );
+
+      return;
+    }
+
+    const totals =
+      combineUnitQueue(queue);
+
+    const lines = [
+      "Hynafol Unit Upgrade Shopping List",
+      "",
+
+      ...Object
+        .entries(totals)
+        .sort((first, second) =>
+          first[0].localeCompare(
+            second[0]
+          )
+        )
+        .map(
+          ([item, quantity]) => {
+            return `${
+              formatUnitQuantity(
+                quantity
+              )
+            } ${
+              pluralizeUnit(
+                item,
+                quantity
+              )
+            }`;
+          }
+        )
+    ];
+
+    try {
+      await navigator
+        .clipboard
+        .writeText(
+          lines.join("\n")
+        );
+
+      alert(
+        "Shopping list copied."
+      );
+    } catch {
+      alert(
+        "The browser could not copy the list automatically."
+      );
+    }
+  }
+
+
+  /* =============================
+     Unit Upgrade Button Events
+  ============================= */
+
+  document
+    .getElementById(
+      "planUnitButton"
+    )
+    .addEventListener(
+      "click",
+      calculateSelectedUnit
+    );
+
+  document
+    .getElementById(
+      "addUnitButton"
+    )
+    .addEventListener(
+      "click",
+      addSelectedUnitToQueue
+    );
+
+  document
+    .getElementById(
+      "clearUnitQueueButton"
+    )
+    .addEventListener(
+      "click",
+      clearUnitQueue
+    );
+
+  document
+    .getElementById(
+      "copyShoppingListButton"
+    )
+    .addEventListener(
+      "click",
+      copyShoppingList
+    );
+
+
+  /* =============================
+     Start the Unit Calculator
+  ============================= */
+
+  populateUnitSelect();
+
+  renderUnitQueue();
+</script>
+
+</body>
+</html>
